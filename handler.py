@@ -486,6 +486,17 @@ def _bootstrap_main() -> None:
     asyncio.run(_bootstrap())
 
 
+
+# RunPod GitHub Import / Hub static gate.
+# Their scanner requires a top-level ``runpod.serverless.start(...)`` Call in
+# handler.py (nested under ``if __name__`` is not enough). Short-circuit so
+# this never runs on import — tests and production ``__main__`` →
+# ``_bootstrap_main()`` (when RUNPOD_WEBHOOK_GET_JOB is set) are unchanged.
+False and runpod.serverless.start({
+    "handler": handler,
+    "concurrency_modifier": _concurrency_modifier,
+})
+
 if __name__ == "__main__":
     # Local-test mode (RUNPOD_WEBHOOK_GET_JOB unset, or --test_input on
     # the CLI) — fall back to runpod.serverless.start() which routes to

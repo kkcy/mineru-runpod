@@ -56,8 +56,8 @@ def _python_files() -> list[Path]:
                 Path(directory) / name for name in names if name.endswith(".py")
             )
         return found
-    # Symlinks are skipped: `.runpod/handler.py` is a link to `../handler.py`,
-    # and counting it would report the same file twice under two names.
+    # Symlinks (if any) are skipped so a link and its target are not counted
+    # twice. `.runpod/handler.py` is a real detection stub, not a symlink.
     return [
         REPO / name
         for name in listed
